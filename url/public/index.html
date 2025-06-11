@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form id="short-form">
+            <div>
+                <label for="url">Enter URL:</label>
+                <input type="url" name="url" id="url" required>
+            </div>
+            <div>
+                <label for="shortCode">Enter shortCode (optional):</label>
+                <input type="text" name="shortCode" id="shortCode">
+            </div>
+            <button type="submit">Shorten</button>
+        </form>
+        <h2>Shortened URLs</h2>
+        <ul id="shortened-urls"></ul>
+    </div>
+
+    <script>
+        document.getElementById('short-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formdata = new FormData(event.target);
+            const url = formdata.get('url');
+            const shortCode = formdata.get('shortCode');
+
+            try {
+                const response = await fetch("/shorten", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url, shortCode })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert("Form submitted successfully!");
+
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<a href="/${result.shortCode}" target="_blank">${location.origin}/${result.shortCode}</a>`;
+                    document.getElementById("shortened-urls").appendChild(listItem);
+                } else {
+                    const error = await response.text();
+                    alert(error);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Something went wrong!");
+            }
+        });
+    </script>
+</body>
+</html>
