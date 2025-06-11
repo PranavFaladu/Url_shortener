@@ -7,7 +7,7 @@ import crypto from "crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 const DATA_FILE = path.join(__dirname, "url", "data", "link.json");
 
 const loadLinks = async () => {
@@ -109,6 +109,6 @@ const server = createServer(async (req, res) => {
     }
 });
 
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running at http://0.0.0.0:${PORT}`);
 });
